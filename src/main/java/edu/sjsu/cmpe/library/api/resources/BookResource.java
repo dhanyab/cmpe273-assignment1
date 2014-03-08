@@ -123,7 +123,12 @@ public class BookResource {
 	@Path("/{isbn}/reviews")
 	public Response createReview(Review review,
 			@PathParam("isbn") LongParam isbn) {
-
+		if(review.getRating()==0 || review.getComment() == null)
+		{
+			return Response.status(400).build();
+		}
+		else
+		{
 		Book book = bookRepository.getBookByISBN(isbn.get());
 		bookRepository.saveReview(book, review);
 		LinksDto reviewResponse = new LinksDto();
@@ -133,6 +138,7 @@ public class BookResource {
 				+ "/reviews/" + review.getId(), "GET"));
 
 		return Response.status(201).entity(reviewResponse).build();
+		}
 	}
 
 	@GET
